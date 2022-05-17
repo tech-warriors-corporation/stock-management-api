@@ -54,17 +54,9 @@ class ProductInput:
     def created_by(self):
         return self._created_by
 
-    @created_by.setter
-    def created_by(self, created_by):
-        self._created_by = created_by
-
     @property
     def created_at(self):
         return self._created_at
-
-    @created_at.setter
-    def created_at(self, created_at):
-        self._created_at = created_at
 
     @property
     def has_product_expiration(self):
