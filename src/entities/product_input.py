@@ -91,5 +91,9 @@ class ProductInput:
         self._entered_at = entered_at
 
     @property
+    def activity_type(self):
+        return self._activity_type.value
+
+    @property
     def total_price(self):
         return self.unit_price * self.quantity
