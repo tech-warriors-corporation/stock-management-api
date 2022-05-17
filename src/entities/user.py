@@ -1,5 +1,5 @@
 class User:
-    def __init__(self, name, email, is_admin):
+    def __init__(self, name, email, is_admin = False):
         self._name = name
         self._email = email
         self._is_admin = is_admin
