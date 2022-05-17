@@ -1,7 +1,8 @@
 from src.enums.activity_type import ActivityType
+from datetime import datetime
 
 class ProductInput:
-    def __init__(self, description, quantity, unit_price, product, created_by, created_at, has_product_expiration = False, is_donation = False, entered_at = None):
+    def __init__(self, description, quantity, unit_price, product, created_by, created_at = datetime.now(), has_product_expiration = False, is_donation = False, entered_at = None):
         self._description = description
         self._quantity = quantity
         self._unit_price = unit_price
