@@ -1,2 +1,2 @@
-# stock-management-server
-Stock management server.
+# stock-management-api
+Stock management API.
