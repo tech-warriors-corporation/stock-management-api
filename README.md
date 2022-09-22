@@ -1,2 +1,2 @@
 # stock-management-api
-Stock management API.
+The API for consult data from Casulo Social (NGO).
