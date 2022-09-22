@@ -1,1 +1,1 @@
-# TODO: init application
+# TODO: start application
