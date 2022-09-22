@@ -1,38 +1,10 @@
 class Product:
-    def __init__(self, name, image, category, quantity = 0):
-        self._name = name
-        self._image = image
-        self._category = category
+    def __init__(self, category_id, product_name, dt_created, quantity = 0, created_by_user_id = None, product_id = None, is_active = True, dt_updated = None):
+        self._product_id = product_id
+        self._category_id = category_id
+        self._product_name = product_name
         self._quantity = quantity
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        self._name = name
-
-    @property
-    def image(self):
-        return self._image
-
-    @image.setter
-    def image(self, image):
-        self._image = image
-
-    @property
-    def category(self):
-        return self._category
-
-    @category.setter
-    def category(self, category):
-        self._category = category
-
-    @property
-    def quantity(self):
-        return self._quantity
-
-    @quantity.setter
-    def quantity(self, quantity):
-        self._quantity = quantity
+        self._created_by_user_id = created_by_user_id
+        self._is_active = is_active
+        self._dt_created = dt_created
+        self._dt_updated = dt_updated
