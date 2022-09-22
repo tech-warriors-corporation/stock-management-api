@@ -1,5 +1,8 @@
+from src.enums.situation import Situation
+from src.enums.admin import Admin
+
 class User:
-    def __init__(self, user_name, email, user_password, dt_created, is_admin = False, created_by_user_id = None, user_id = None, is_active = True, dt_updated = None):
+    def __init__(self, user_name, email, user_password, dt_created, is_admin = Admin.NO.value, created_by_user_id = None, user_id = None, is_active = Situation.ACTIVE.value, dt_updated = None):
         self._user_id = user_id
         self._user_name = user_name
         self._email = email
