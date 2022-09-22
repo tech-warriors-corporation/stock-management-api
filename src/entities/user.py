@@ -1,5 +1,3 @@
-from src.enums.boolean_as_number import BooleanAsNumber
-
 class User:
     def __init__(self, user_id, user_name, email, user_password, is_admin, is_active, dt_created, dt_updated, created_by_user_id):
         self._user_id = user_id
