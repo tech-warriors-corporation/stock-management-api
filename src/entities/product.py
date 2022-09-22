@@ -1,7 +1,7 @@
 from src.enums.boolean_as_number import BooleanAsNumber
 
 class Product:
-    def __init__(self, category_id, product_name, created_by_user_id, dt_created, quantity = 0, product_id = None, is_active = BooleanAsNumber.TRUE.value, dt_updated = None):
+    def __init__(self, product_id, category_id, product_name, quantity, created_by_user_id, is_active, dt_created, dt_updated):
         self._product_id = product_id
         self._category_id = category_id
         self._product_name = product_name
