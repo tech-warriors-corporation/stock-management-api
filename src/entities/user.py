@@ -1,29 +1,11 @@
 class User:
-    def __init__(self, name, email, is_admin = False):
-        self._name = name
+    def __init__(self, user_name, email, user_password, dt_created, is_admin = False, created_by_user_id = None, user_id = None, is_active = True, dt_updated = None):
+        self._user_id = user_id
+        self._user_name = user_name
         self._email = email
+        self._user_password = user_password
         self._is_admin = is_admin
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        self._name = name
-
-    @property
-    def email(self):
-        return self._email
-
-    @email.setter
-    def email(self, email):
-        self._email = email
-
-    @property
-    def is_admin(self):
-        return self._is_admin
-
-    @is_admin.setter
-    def is_admin(self, is_admin):
-        self._is_admin = is_admin
+        self._is_active = is_active
+        self._dt_created = dt_created
+        self._dt_updated = dt_updated
+        self._created_by_user_id = created_by_user_id
