@@ -1,7 +1,7 @@
 from src.enums.situation import Situation
 
 class Product:
-    def __init__(self, category_id, product_name, dt_created, quantity = 0, created_by_user_id = None, product_id = None, is_active = Situation.ACTIVE, dt_updated = None):
+    def __init__(self, category_id, product_name, dt_created, quantity = 0, created_by_user_id = None, product_id = None, is_active = Situation.ACTIVE.value, dt_updated = None):
         self._product_id = product_id
         self._category_id = category_id
         self._product_name = product_name
