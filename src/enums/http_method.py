@@ -1,4 +1,4 @@
 from enum import Enum
 
-class HttpMethods(Enum):
+class HttpMethod(Enum):
     POST = 'post'
