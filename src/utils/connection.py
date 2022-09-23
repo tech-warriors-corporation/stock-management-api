@@ -10,7 +10,7 @@ def get_connection():
     global _connection
 
     if _connection is not None:
-        return _connection.cursor()
+        return _connection
 
     _connection = oracledb.connect(user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), port=os.environ.get('DB_PORT'), sid=os.environ.get('DB_SID'))
 
