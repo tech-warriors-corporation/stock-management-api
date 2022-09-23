@@ -5,6 +5,7 @@ from src.entities.product import Product
 from src.entities.output import Output
 from src.entities.input import Input
 from datetime import datetime
+from src.utils.connection import get_connection
 
 registered_id = 1
 date = datetime.now()
@@ -19,3 +20,7 @@ print(category)
 print(product)
 print(output)
 print(product_input)
+
+connection = get_connection()
+
+print(connection)
