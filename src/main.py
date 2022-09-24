@@ -5,6 +5,6 @@ from src.enums.env_var import EnvVar
 
 load_dotenv(find_dotenv())
 
-import src.routes.login
+import src.routes.auth
 
 app.run(debug=eval(environ.get(EnvVar.DEBUG_MODE.value)))
