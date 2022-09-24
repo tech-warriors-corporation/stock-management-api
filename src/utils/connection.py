@@ -1,8 +1,6 @@
 import oracledb
-from dotenv import load_dotenv, find_dotenv
-import os
-
-load_dotenv(find_dotenv())
+from os import environ
+from src.enums.env_var import EnvVar
 
 _connection = None
 
@@ -12,6 +10,12 @@ def get_connection():
     if _connection is not None:
         return _connection
 
-    _connection = oracledb.connect(user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), port=os.environ.get('DB_PORT'), sid=os.environ.get('DB_SID'))
+    _connection = oracledb.connect(
+        user=environ.get(EnvVar.DB_USER.value),
+        password=environ.get(EnvVar.DB_PASSWORD.value),
+        host=environ.get(EnvVar.DB_HOST.value),
+        port=environ.get(EnvVar.DB_PORT.value),
+        sid=environ.get(EnvVar.DB_SID.value)
+    )
 
     return get_connection()
