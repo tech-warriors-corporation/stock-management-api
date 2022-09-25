@@ -1,4 +1,4 @@
-from src.services.app import app
+from src.services.setup import app
 from dotenv import load_dotenv, find_dotenv
 from os import environ
 from src.enums.env_var import EnvVar
