@@ -1,5 +1,5 @@
 from flask import request
-from src.services.app import app
+from src.services.setup import app
 from src.enums.http_method import HttpMethod
 from src.utils.connection import get_connection
 from src.utils.request import create_response
@@ -13,15 +13,16 @@ from src.utils.date import format_to_iso
 from src.enums.header_request import HeaderRequest
 from src.utils.auth import has_valid_token, unauthorized_response
 from src.enums.boolean_as_number import BooleanAsNumber
+from src.utils.constants import api_prefix
 
-@app.route('/login', methods=[HttpMethod.POST.value])
+@app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value])
 def login():
     try:
         values = request.get_json()
         connection = get_connection()
         cursor = connection.cursor()
         email = values['email']
-        user_password = values['userPassword']
+        user_password = values['user_password']
 
         cursor.execute(f"SELECT * FROM {Table.USERS.value} WHERE EMAIL='{email}' AND IS_ACTIVE={BooleanAsNumber.TRUE.value}")
 
@@ -40,7 +41,7 @@ def login():
     except:
         return create_response(None, StatusCode.FORM_ERROR.value)
 
-@app.route('/user_by_token', methods=[HttpMethod.GET.value])
+@app.route(f'/{api_prefix}/user_by_token', methods=[HttpMethod.GET.value])
 def user_by_token():
     token = request.headers.get(HeaderRequest.TOKEN.value)
 
