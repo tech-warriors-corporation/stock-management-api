@@ -11,9 +11,9 @@ from src.enums.crypt_type import CryptType
 from src.utils.token import encoder, decoder
 from src.utils.date import format_to_iso
 from src.enums.header_request import HeaderRequest
-from src.utils.auth import has_valid_token, unauthorized_response
 from src.enums.boolean_as_number import BooleanAsNumber
 from src.utils.constants import api_prefix
+from src.decorators.login_required import login_required
 
 @app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value])
 def login():
@@ -42,10 +42,8 @@ def login():
         return create_response(None, StatusCode.FORM_ERROR.value)
 
 @app.route(f'/{api_prefix}/user_by_token', methods=[HttpMethod.GET.value])
+@login_required
 def user_by_token():
     token = request.headers.get(HeaderRequest.TOKEN.value)
 
-    if has_valid_token(token):
-        return create_response(decoder(token))
-    else:
-        return unauthorized_response()
+    return create_response(decoder(token))
