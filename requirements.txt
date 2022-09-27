@@ -17,7 +17,6 @@ cryptography==37.0.4
 cx-Oracle==8.3.0
 cycler==0.11.0
 dbus-python==1.2.16
-defer==1.0.6
 distlib==0.3.5
 distro==1.4.0
 distro-info===0.23ubuntu1
