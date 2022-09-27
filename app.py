@@ -9,7 +9,7 @@ load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": { "origins": "*" }})
+CORS(app, resources={r"/*": { "origins": "*" }}, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.after_request
