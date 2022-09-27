@@ -1,5 +1,4 @@
 appdirs==1.4.4
-apt-clone==0.2.1
 apturl==0.5.2
 async-generator==1.10
 attrs==22.1.0
@@ -77,6 +76,7 @@ outcome==1.2.0
 packaging==20.3
 PAM==0.4.2
 paramiko==2.6.0
+pbr==5.10.0
 pdfminer.six==20211012
 perfplot==0.10.2
 pexpect==4.6.0
@@ -137,6 +137,7 @@ soupsieve==1.9.5
 system-service==0.3
 systemd-python==234
 tesserocr==2.5.2
+testresources==2.0.1
 tifffile==2021.11.2
 tinycss2==1.0.2
 tldextract==2.2.1
