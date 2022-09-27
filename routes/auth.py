@@ -15,7 +15,7 @@ from utils.constants import api_prefix
 from decorators.login_required import login_required
 from __main__ import app
 
-@app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value, 'OPTIONS'])
+@app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value])
 def login():
     try:
         values = request.get_json()
@@ -41,7 +41,7 @@ def login():
     except:
         return create_response(None, StatusCode.FORM_ERROR.value)
 
-@app.route(f'/{api_prefix}/user_by_token', methods=[HttpMethod.GET.value, 'OPTIONS'])
+@app.route(f'/{api_prefix}/user_by_token', methods=[HttpMethod.GET.value])
 @login_required
 def user_by_token():
     token = request.headers.get(HeaderRequest.TOKEN.value)
