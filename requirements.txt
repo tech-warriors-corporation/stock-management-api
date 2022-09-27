@@ -57,7 +57,6 @@ monotonic==1.5
 netaddr==0.7.19
 netifaces==0.10.4
 networkx==2.6.3
-notify2==0.3
 numpy==1.21.5
 oauthlib==3.1.0
 ocrmypdf==13.2.0
