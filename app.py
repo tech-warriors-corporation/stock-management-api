@@ -8,8 +8,9 @@ from utils.constants import api_prefix
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-CORS(app, resources={rf"/{api_prefix}/*": { "origins": "*" }})
+CORS(app, resources={rf"/{api_prefix}/*": { "origins": [environ.get(EnvVar.ORIGIN.value)] }})
 
 import routes.auth
 
