@@ -1,6 +1,6 @@
 from flask import request
-from src.utils.auth import has_valid_token, unauthorized_response
-from src.enums.header_request import HeaderRequest
+from utils.auth import has_valid_token, unauthorized_response
+from enums.header_request import HeaderRequest
 
 def login_required(callback):
     def secure_function():
