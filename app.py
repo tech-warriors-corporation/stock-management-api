@@ -11,6 +11,15 @@ app = Flask(__name__)
 
 CORS(app, resources={rf"/{api_prefix}/*": { "origins": [environ.get(EnvVar.ORIGIN.value)] }})
 
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', environ.get(EnvVar.ORIGIN.value))
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  response.headers.add('Access-Control-Allow-Credentials', 'true')
+
+  return response
+
 import routes.auth
 
 if __name__ == '__main__':
