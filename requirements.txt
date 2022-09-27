@@ -94,7 +94,6 @@ pyparsing==2.4.6
 PyPDF2==1.26.0
 PyQt5==5.14.1
 pyRFC3339==1.1
-PySocks==1.7.1
 screen-resolution-extra==0.0.0
 SecretStorage==2.3.1
 selenium==4.3.0
