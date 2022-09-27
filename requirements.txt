@@ -98,7 +98,6 @@ PySocks==1.7.1
 python-dateutil==2.8.2
 python-dotenv==0.20.0
 python-xlib==0.23
-pytz==2019.3
 screen-resolution-extra==0.0.0
 SecretStorage==2.3.1
 selenium==4.3.0
