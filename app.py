@@ -9,7 +9,7 @@ load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
-CORS(app, resources={rf"/{api_prefix}/*": { "origins": [environ.get(EnvVar.ORIGIN.value)] }})
+CORS(app)
 
 import routes.auth
 
