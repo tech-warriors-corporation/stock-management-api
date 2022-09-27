@@ -1,19 +1,19 @@
 from flask import request
-from src.services.setup import app
-from src.enums.http_method import HttpMethod
-from src.utils.connection import get_connection
-from src.utils.request import create_response
-from src.enums.table import Table
-from src.entities.user import User
-from src.enums.status_code import StatusCode
+from enums.http_method import HttpMethod
+from utils.connection import get_connection
+from utils.request import create_response
+from enums.table import Table
+from entities.user import User
+from enums.status_code import StatusCode
 from cryptocode import decrypt
-from src.enums.crypt_type import CryptType
-from src.utils.token import encoder, decoder
-from src.utils.date import format_to_iso
-from src.enums.header_request import HeaderRequest
-from src.enums.boolean_as_number import BooleanAsNumber
-from src.utils.constants import api_prefix
-from src.decorators.login_required import login_required
+from enums.crypt_type import CryptType
+from utils.token import encoder, decoder
+from utils.date import format_to_iso
+from enums.header_request import HeaderRequest
+from enums.boolean_as_number import BooleanAsNumber
+from utils.constants import api_prefix
+from decorators.login_required import login_required
+from app import app
 
 @app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value])
 def login():
