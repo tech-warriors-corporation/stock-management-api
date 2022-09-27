@@ -1,5 +1,5 @@
-from src.enums.status_code import StatusCode
-from src.utils.error import customized_error
+from enums.status_code import StatusCode
+from utils.error import customized_error
 
 def create_response(value = None, status_code = StatusCode.SUCCESS.value):
     try:

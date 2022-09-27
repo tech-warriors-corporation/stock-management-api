@@ -1,5 +1,5 @@
 from os import environ
-from src.enums.env_var import EnvVar
+from enums.env_var import EnvVar
 from jwt import encode, decode
 
 _secret = environ.get(EnvVar.JWT_SECRET.value)

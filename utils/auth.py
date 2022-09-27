@@ -1,9 +1,9 @@
-from src.utils.token import decoder
-from src.enums.table import Table
-from src.utils.connection import get_connection
-from src.enums.boolean_as_number import BooleanAsNumber
-from src.utils.request import create_response
-from src.enums.status_code import StatusCode
+from utils.token import decoder
+from enums.table import Table
+from utils.connection import get_connection
+from enums.boolean_as_number import BooleanAsNumber
+from utils.request import create_response
+from enums.status_code import StatusCode
 
 def has_valid_token(token):
     try:

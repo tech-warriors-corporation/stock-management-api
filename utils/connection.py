@@ -1,6 +1,6 @@
 import oracledb
 from os import environ
-from src.enums.env_var import EnvVar
+from enums.env_var import EnvVar
 
 _connection = None
 
