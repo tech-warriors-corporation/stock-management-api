@@ -13,4 +13,5 @@ CORS(app, resources={rf"/{api_prefix}/*": { "origins": [environ.get(EnvVar.ORIGI
 
 import routes.auth
 
-app.run(debug=eval(environ.get(EnvVar.DEBUG_MODE.value)))
+if __name__ == '__main__':
+    app.run(debug=eval(environ.get(EnvVar.DEBUG_MODE.value)))
