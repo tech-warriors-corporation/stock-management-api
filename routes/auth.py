@@ -13,13 +13,7 @@ from enums.header_request import HeaderRequest
 from enums.boolean_as_number import BooleanAsNumber
 from utils.constants import api_prefix
 from decorators.login_required import login_required
-from utils.error import customized_error
-from app import app
-
-try:
-    from __main__ import app
-except:
-    customized_error('__main__')
+from services.setup import app
 
 @app.route(f'/{api_prefix}/login', methods=[HttpMethod.POST.value])
 def login():
