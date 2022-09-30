@@ -1,7 +1,7 @@
 from enums.status_code import StatusCode
 from utils.error import customized_error
 
-def create_response(value = None, status_code = StatusCode.SUCCESS.value):
+def create_response(value = None, status_code = StatusCode.SUCCESS.value, count = None):
     try:
         data = value.__dict__
     except:
@@ -9,4 +9,4 @@ def create_response(value = None, status_code = StatusCode.SUCCESS.value):
 
         data = value
 
-    return { 'data': data }, status_code
+    return { 'data': data, 'count': count }, status_code
