@@ -11,7 +11,7 @@ def has_valid_token(token):
         connection = get_connection()
         cursor = connection.cursor()
 
-        cursor.execute(f"SELECT * FROM {Table.USERS.value} WHERE EMAIL='{user_by_token['email']}' AND USER_ID={user_by_token['user_id']} AND USER_NAME='{user_by_token['user_name']}' AND USER_PASSWORD='{user_by_token['user_password']}' AND IS_ACTIVE={BooleanAsNumber.TRUE.value}")
+        cursor.execute(f"SELECT USER_ID FROM {Table.USERS.value} WHERE EMAIL='{user_by_token['email']}' AND USER_ID={user_by_token['user_id']} AND USER_NAME='{user_by_token['user_name']}' AND USER_PASSWORD='{user_by_token['user_password']}' AND IS_ADMIN={user_by_token['is_admin']} AND IS_ACTIVE={BooleanAsNumber.TRUE.value}")
 
         result = cursor.fetchone()
 
