@@ -12,6 +12,7 @@ app = Flask(__name__)
 CORS(app, resources={rf"/{api_prefix}/*": { "origins": [environ.get(EnvVar.ORIGIN.value)] }})
 
 import routes.auth
+import routes.users
 
 if __name__ == '__main__':
     app.run(debug=eval(environ.get(EnvVar.DEBUG_MODE.value)), port=int(environ.get(EnvVar.PORT.value)))
