@@ -1,6 +1,6 @@
 from enum import Enum
 
 class StatusCode(Enum):
-    SUCCESS = 200
-    FORM_ERROR = 400
+    OK = 200
+    BAD_REQUEST = 400
     UNAUTHORIZED = 401

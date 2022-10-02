@@ -35,11 +35,11 @@ def login():
         if user_password == decrypted_password:
             token = encoder(User(result[0], result[1], result[2], encrypted_password, result[4], result[5], format_to_iso(result[6]), format_to_iso(result[7]), result[8]).__dict__)
 
-            return create_response(token, StatusCode.SUCCESS.value)
+            return create_response(token, StatusCode.OK.value)
 
-        return create_response(None, StatusCode.FORM_ERROR.value)
+        return create_response(None, StatusCode.BAD_REQUEST.value)
     except:
-        return create_response(None, StatusCode.FORM_ERROR.value)
+        return create_response(None, StatusCode.BAD_REQUEST.value)
 
 @app.route(f'/{api_prefix}/user_by_token', methods=[HttpMethod.GET.value])
 @login_required
