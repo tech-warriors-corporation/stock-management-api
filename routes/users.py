@@ -47,4 +47,20 @@ def users():
 
         return create_response(data, count=count)
     except:
-        return create_response(None, StatusCode.FORM_ERROR.value)
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users/<int:user_id>', methods=[HttpMethod.DELETE.value])
+@login_required
+@is_admin
+def delete_user(user_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(f"UPDATE {Table.USERS.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
