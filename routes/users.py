@@ -17,12 +17,16 @@ from entities.user import User
 def users():
     try:
         query_params = request.args.to_dict()
-        page = query_params.get('page')
-        per_page = 10
+        page = int(query_params.get('page'))
+        per_page = int(query_params.get('per_page'))
+        user_name = query_params.get('user_name')
         connection = get_connection()
         cursor = connection.cursor()
         where = f"WHERE IS_ACTIVE={BooleanAsNumber.TRUE.value}"
         data = []
+
+        if user_name is not None:
+            where = f"{where} AND LOWER(USER_NAME) LIKE LOWER('%{user_name}%')"
 
         cursor.execute(f"SELECT USER_ID, USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} {where} ORDER BY USER_NAME OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
