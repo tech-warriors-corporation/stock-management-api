@@ -10,6 +10,10 @@ from enums.boolean_as_number import BooleanAsNumber
 from enums.status_code import StatusCode
 from flask import request
 from entities.user import User
+from cryptocode import encrypt
+from enums.crypt_type import CryptType
+from enums.header_request import HeaderRequest
+from utils.token import decoder
 
 @app.route(f'/{api_prefix}/users', methods=[HttpMethod.GET.value])
 @login_required
@@ -58,6 +62,40 @@ def delete_user(user_id):
         cursor = connection.cursor()
 
         cursor.execute(f"UPDATE {Table.USERS.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users', methods=[HttpMethod.POST.value])
+@login_required
+@is_admin
+def new_user():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        token = request.headers.get(HeaderRequest.TOKEN.value)
+        user = decoder(token)
+        values = request.get_json()
+        user_name = values['user_name']
+        email = values['email']
+        user_password = values['user_password']
+        user_password_confirmation = values['user_password_confirmation']
+        is_user_admin = values['is_admin']
+
+        if user_password != user_password_confirmation:
+            return create_response(None, StatusCode.BAD_REQUEST.value)
+
+        encrypted_user_password = encrypt(user_password, CryptType.PASSWORD.value)
+
+        cursor.execute(
+            f"INSERT INTO "
+            f"{Table.USERS.value}(USER_ID, USER_NAME, EMAIL, USER_PASSWORD, IS_ADMIN, IS_ACTIVE, DT_CREATED, CREATED_BY_USER_ID) "
+            f"VALUES(INDEX_USER.NEXTVAL, '{user_name}', '{email}', '{encrypted_user_password}', {is_user_admin}, {BooleanAsNumber.TRUE.value}, SYSDATE, {user['user_id']})"
+        )
+
         connection.commit()
         cursor.close()
 
