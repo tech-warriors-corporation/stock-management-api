@@ -115,6 +115,30 @@ def get_user(user_id):
 
         result = cursor.fetchone()
 
+        cursor.close()
+
         return create_response(User(user_id, result[0], result[1], None, result[2], BooleanAsNumber.TRUE.value, None, None, None))
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users/<int:user_id>', methods=[HttpMethod.PATCH.value])
+@login_required
+@is_admin
+def edit_user(user_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        user_name = values['user_name']
+        email = values['email']
+
+        cursor.execute(
+            f"UPDATE {Table.USERS.value} SET USER_NAME = '{user_name}', EMAIL = '{email}', DT_UPDATED = SYSDATE WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
