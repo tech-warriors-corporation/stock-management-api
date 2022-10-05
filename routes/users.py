@@ -102,3 +102,19 @@ def new_user():
         return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users/<int:user_id>', methods=[HttpMethod.GET.value])
+@login_required
+@is_admin
+def get_user(user_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(f"SELECT USER_NAME, EMAIL, IS_ADMIN FROM {Table.USERS.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+
+        result = cursor.fetchone()
+
+        return create_response(User(user_id, result[0], result[1], None, result[2], BooleanAsNumber.TRUE.value, None, None, None))
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
