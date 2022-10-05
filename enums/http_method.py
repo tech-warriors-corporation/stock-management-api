@@ -4,3 +4,4 @@ class HttpMethod(Enum):
     GET = 'get'
     POST = 'post'
     DELETE = 'delete'
+    PATCH = 'patch'
