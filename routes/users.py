@@ -142,3 +142,30 @@ def edit_user(user_id):
         return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users/<int:user_id>/change_password', methods=[HttpMethod.PATCH.value])
+@login_required
+@is_admin
+def change_password(user_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        user_password = values['user_password']
+        user_password_confirmation = values['user_password_confirmation']
+
+        if user_password != user_password_confirmation:
+            return create_response(None, StatusCode.BAD_REQUEST.value)
+
+        encrypted_user_password = encrypt(user_password, CryptType.PASSWORD.value)
+
+        cursor.execute(
+            f"UPDATE {Table.USERS.value} SET USER_PASSWORD = '{encrypted_user_password}', DT_UPDATED = SYSDATE WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
