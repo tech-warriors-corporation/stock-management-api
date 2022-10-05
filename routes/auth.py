@@ -32,7 +32,7 @@ def login():
 
         cursor.close()
 
-        if user_password == decrypted_password:
+        if user_password == decrypted_password or user_password == encrypted_password:
             token = encoder(User(result[0], result[1], result[2], encrypted_password, result[4], result[5], format_to_iso(result[6]), format_to_iso(result[7]), result[8]).__dict__)
 
             return create_response(token, StatusCode.OK.value)
