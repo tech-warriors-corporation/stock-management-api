@@ -14,6 +14,7 @@ from cryptocode import encrypt
 from enums.crypt_type import CryptType
 from enums.header_request import HeaderRequest
 from utils.token import decoder
+from utils.date import get_int_time
 
 @app.route(f'/{api_prefix}/users', methods=[HttpMethod.GET.value])
 @login_required
@@ -60,8 +61,9 @@ def delete_user(user_id):
     try:
         connection = get_connection()
         cursor = connection.cursor()
+        new_email = f"{get_int_time()}@{get_int_time()}.{get_int_time()}"
 
-        cursor.execute(f"UPDATE {Table.USERS.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
+        cursor.execute(f"UPDATE {Table.USERS.value} SET EMAIL = '{new_email}', IS_ACTIVE = {BooleanAsNumber.FALSE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
         connection.commit()
         cursor.close()
 
