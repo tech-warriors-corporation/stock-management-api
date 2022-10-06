@@ -37,7 +37,7 @@ def users():
         if email is not None:
             where = f"{where} AND LOWER(EMAIL) LIKE LOWER('%{email}%')"
 
-        cursor.execute(f"SELECT USER_ID, USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} {where} ORDER BY USER_NAME, DT_CREATED, USER_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
+        cursor.execute(f"SELECT USER_ID, USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} {where} ORDER BY LOWER(USER_NAME), DT_CREATED, USER_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
         items = cursor.fetchall()
 
