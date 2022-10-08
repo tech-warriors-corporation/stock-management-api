@@ -10,6 +10,8 @@ from enums.table import Table
 from entities.category import Category
 from utils.connection import get_connection
 from flask import request
+from utils.token import decoder
+from enums.header_request import HeaderRequest
 
 @app.route(f'/{api_prefix}/categories', methods=[HttpMethod.GET.value])
 @login_required
@@ -54,6 +56,31 @@ def delete_category(category_id):
         cursor = connection.cursor()
 
         cursor.execute(f"UPDATE {Table.CATEGORIES.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value}, DT_UPDATED = SYSDATE WHERE CATEGORY_ID = {category_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/categories', methods=[HttpMethod.POST.value])
+@login_required
+@is_admin
+def new_category():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        token = request.headers.get(HeaderRequest.TOKEN.value)
+        user = decoder(token)
+        values = request.get_json()
+        category_name = values['category_name']
+
+        cursor.execute(
+            f"INSERT INTO "
+            f"{Table.CATEGORIES.value}(CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE, DT_CREATED, CREATED_BY_USER_ID) "
+            f"VALUES(INDEX_CATEGORY.NEXTVAL, '{category_name}', {BooleanAsNumber.TRUE.value}, SYSDATE, {user['user_id']})"
+        )
+
         connection.commit()
         cursor.close()
 
