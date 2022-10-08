@@ -44,3 +44,19 @@ def categories():
         return create_response(data, count=count)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/categories/<int:category_id>', methods=[HttpMethod.DELETE.value])
+@login_required
+@is_admin
+def delete_category(category_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(f"UPDATE {Table.CATEGORIES.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value}, DT_UPDATED = SYSDATE WHERE CATEGORY_ID = {category_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
