@@ -63,7 +63,7 @@ def delete_user(user_id):
         cursor = connection.cursor()
         new_email = f"{get_int_time()}@{get_int_time()}.{get_int_time()}"
 
-        cursor.execute(f"UPDATE {Table.USERS.value} SET EMAIL = '{new_email}', IS_ACTIVE = {BooleanAsNumber.FALSE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
+        cursor.execute(f"UPDATE {Table.USERS.value} SET EMAIL = '{new_email}', IS_ACTIVE = {BooleanAsNumber.FALSE.value}, DT_UPDATED = SYSDATE WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value} AND IS_ADMIN = {BooleanAsNumber.FALSE.value}")
         connection.commit()
         cursor.close()
 
