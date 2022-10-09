@@ -87,3 +87,40 @@ def new_category():
         return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/categories/<int:category_id>', methods=[HttpMethod.GET.value])
+@login_required
+@is_admin
+def get_category(category_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(f"SELECT CATEGORY_NAME FROM {Table.CATEGORIES.value} WHERE CATEGORY_ID = {category_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+
+        result = cursor.fetchone()
+
+        cursor.close()
+
+        return create_response(Category(category_id, result[0], None, BooleanAsNumber.TRUE.value, None, None))
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/categories/<int:category_id>', methods=[HttpMethod.PATCH.value])
+@login_required
+@is_admin
+def edit_category(category_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        category_name = values['category_name']
+
+        cursor.execute(f"UPDATE {Table.CATEGORIES.value} SET CATEGORY_NAME = '{category_name}', DT_UPDATED = SYSDATE WHERE CATEGORY_ID = {category_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
