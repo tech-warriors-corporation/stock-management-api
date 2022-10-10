@@ -98,7 +98,7 @@ def get_category(category_id, only_active = True):
         where = f"WHERE CATEGORY_ID = {category_id}"
 
         if only_active:
-            where = f"AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+            where = f"{where} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
 
         cursor.execute(f"SELECT CATEGORY_NAME FROM {Table.CATEGORIES.value} {where}")
 
