@@ -39,10 +39,11 @@ def products():
 
         for item in items:
             category_id = item[2]
-            category_response = get_category(category_id)[0]
-            category_name = category_response['data']['category_name']
+            category_data = get_category(category_id, False)[0]['data']
+            category_name = category_data['category_name']
+            category_is_active = category_data['is_active']
 
-            data.append(Product(item[0], None, item[1], None, None, BooleanAsNumber.TRUE.value, None, None, category_name).__dict__)
+            data.append(Product(item[0], None, item[1], None, None, BooleanAsNumber.TRUE.value, None, None, category_name, category_is_active).__dict__)
 
         cursor.execute(f"SELECT COUNT(*) FROM {Table.PRODUCTS.value} {where}")
 

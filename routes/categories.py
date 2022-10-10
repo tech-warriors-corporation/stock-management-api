@@ -91,12 +91,16 @@ def new_category():
 @app.route(f'/{api_prefix}/categories/<int:category_id>', methods=[HttpMethod.GET.value])
 @login_required
 @is_admin
-def get_category(category_id):
+def get_category(category_id, only_active = True):
     try:
         connection = get_connection()
         cursor = connection.cursor()
+        where = f"WHERE CATEGORY_ID = {category_id}"
 
-        cursor.execute(f"SELECT CATEGORY_NAME FROM {Table.CATEGORIES.value} WHERE CATEGORY_ID = {category_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        if only_active:
+            where = f"AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+
+        cursor.execute(f"SELECT CATEGORY_NAME FROM {Table.CATEGORIES.value} {where}")
 
         result = cursor.fetchone()
 
