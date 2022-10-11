@@ -113,13 +113,13 @@ def get_user(user_id):
         connection = get_connection()
         cursor = connection.cursor()
 
-        cursor.execute(f"SELECT USER_NAME, EMAIL, IS_ADMIN FROM {Table.USERS.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        cursor.execute(f"SELECT USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
 
         result = cursor.fetchone()
 
         cursor.close()
 
-        return create_response(User(user_id, result[0], result[1], None, result[2], BooleanAsNumber.TRUE.value, None, None, None))
+        return create_response(User(user_id, result[0], result[1], None, result[2], result[3], None, None, None))
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
 

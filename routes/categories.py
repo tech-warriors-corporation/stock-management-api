@@ -30,12 +30,12 @@ def categories():
         if category_name is not None:
             where = f"{where} AND LOWER(CATEGORY_NAME) LIKE LOWER('%{category_name}%')"
 
-        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
+        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
         items = cursor.fetchall()
 
         for item in items:
-            data.append(Category(item[0], item[1], None, BooleanAsNumber.TRUE.value, None, None).__dict__)
+            data.append(Category(item[0], item[1], None, item[2], None, None).__dict__)
 
         cursor.execute(f"SELECT COUNT(*) FROM {Table.CATEGORIES.value} {where}")
 
@@ -100,13 +100,13 @@ def get_category(category_id, only_active = True):
         if only_active:
             where = f"{where} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
 
-        cursor.execute(f"SELECT CATEGORY_NAME FROM {Table.CATEGORIES.value} {where}")
+        cursor.execute(f"SELECT CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where}")
 
         result = cursor.fetchone()
 
         cursor.close()
 
-        return create_response(Category(category_id, result[0], None, BooleanAsNumber.TRUE.value, None, None))
+        return create_response(Category(category_id, result[0], None, result[1], None, None))
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
 

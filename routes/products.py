@@ -33,7 +33,7 @@ def products():
         if category_id is not None:
             where = f"{where} AND CATEGORY_ID = {int(category_id)}"
 
-        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, CATEGORY_ID FROM {Table.PRODUCTS.value} {where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED, PRODUCT_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, CATEGORY_ID, IS_ACTIVE FROM {Table.PRODUCTS.value} {where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED, PRODUCT_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
         items = cursor.fetchall()
 
@@ -43,7 +43,7 @@ def products():
             category_name = category_data['category_name']
             category_is_active = category_data['is_active']
 
-            data.append(Product(item[0], None, item[1], None, None, BooleanAsNumber.TRUE.value, None, None, category_name, category_is_active).__dict__)
+            data.append(Product(item[0], None, item[1], None, None, item[3], None, None, category_name, category_is_active).__dict__)
 
         cursor.execute(f"SELECT COUNT(*) FROM {Table.PRODUCTS.value} {where}")
 
