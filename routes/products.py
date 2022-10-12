@@ -30,7 +30,7 @@ def products():
         if product_name is not None:
             where = f"{where} AND LOWER(PRODUCT_NAME) LIKE LOWER('%{product_name}%')"
 
-        if category_id is not None:
+        if category_id is not None and category_id.isnumeric():
             where = f"{where} AND CATEGORY_ID = {int(category_id)}"
 
         cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, CATEGORY_ID, IS_ACTIVE FROM {Table.PRODUCTS.value} {where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED, PRODUCT_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
