@@ -137,8 +137,14 @@ def get_autocomplete_categories():
         connection = get_connection()
         cursor = connection.cursor()
         data = []
+        query_params = request.args.to_dict()
+        is_active = query_params.get('is_active')
+        where = ''
 
-        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID")
+        if is_active is not None and is_active.isnumeric():
+            where = f"WHERE IS_ACTIVE = {int(is_active)}"
+
+        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID")
 
         items = cursor.fetchall()
 
