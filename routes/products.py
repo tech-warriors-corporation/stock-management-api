@@ -85,11 +85,12 @@ def new_product():
         values = request.get_json()
         product_name = values['product_name']
         category_id = values['category_id']
+        quantity = int(values['quantity'])
 
         cursor.execute(
             f"INSERT INTO "
             f"{Table.PRODUCTS.value}(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, QUANTITY, CREATED_BY_USER_ID, IS_ACTIVE, DT_CREATED, DT_UPDATED) "
-            f"VALUES(INDEX_PRODUCT.NEXTVAL, {category_id}, '{product_name}', 0, {user['user_id']}, {BooleanAsNumber.TRUE.value}, SYSDATE, NULL)"
+            f"VALUES(INDEX_PRODUCT.NEXTVAL, {category_id}, '{product_name}', {quantity}, {user['user_id']}, {BooleanAsNumber.TRUE.value}, SYSDATE, NULL)"
         )
 
         connection.commit()
