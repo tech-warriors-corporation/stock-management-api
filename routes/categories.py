@@ -128,3 +128,25 @@ def edit_category(category_id):
         return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/categories/autocomplete', methods=[HttpMethod.GET.value])
+@login_required
+@is_admin
+def get_autocomplete_categories():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        data = []
+
+        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID")
+
+        items = cursor.fetchall()
+
+        cursor.close()
+
+        for item in items:
+            data.append(Category(item[0], item[1], None, item[2], None, None).__dict__)
+
+        return create_response(data)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
