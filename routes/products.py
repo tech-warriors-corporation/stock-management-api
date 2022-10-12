@@ -11,6 +11,8 @@ from entities.product import Product
 from utils.connection import get_connection
 from flask import request
 from routes.categories import get_category
+from utils.token import decoder
+from enums.header_request import HeaderRequest
 
 @app.route(f'/{api_prefix}/products', methods=[HttpMethod.GET.value])
 @login_required
@@ -64,6 +66,32 @@ def delete_product(product_id):
         cursor = connection.cursor()
 
         cursor.execute(f"UPDATE {Table.PRODUCTS.value} SET IS_ACTIVE = {BooleanAsNumber.FALSE.value}, DT_UPDATED = SYSDATE WHERE PRODUCT_ID = {product_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/products', methods=[HttpMethod.POST.value])
+@login_required
+@is_admin
+def new_product():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        token = request.headers.get(HeaderRequest.TOKEN.value)
+        user = decoder(token)
+        values = request.get_json()
+        product_name = values['product_name']
+        category_id = values['category_id']
+
+        cursor.execute(
+            f"INSERT INTO "
+            f"{Table.PRODUCTS.value}(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, QUANTITY, CREATED_BY_USER_ID, IS_ACTIVE, DT_CREATED, DT_UPDATED) "
+            f"VALUES(INDEX_PRODUCT.NEXTVAL, {category_id}, '{product_name}', 0, {user['user_id']}, {BooleanAsNumber.TRUE.value}, SYSDATE, NULL)"
+        )
+
         connection.commit()
         cursor.close()
 
