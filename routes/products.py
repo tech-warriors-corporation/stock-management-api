@@ -85,7 +85,7 @@ def new_product():
         values = request.get_json()
         product_name = values['product_name']
         category_id = values['category_id']
-        quantity = int(values['quantity'])
+        quantity = values['quantity']
 
         cursor.execute(
             f"INSERT INTO "
@@ -97,5 +97,49 @@ def new_product():
         cursor.close()
 
         return create_response(None)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/products/<int:product_id>', methods=[HttpMethod.GET.value])
+@login_required
+@is_admin
+def get_product(product_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(f"SELECT CATEGORY_ID, PRODUCT_NAME, QUANTITY, IS_ACTIVE FROM {Table.PRODUCTS.value} WHERE PRODUCT_ID = {product_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+
+        result = cursor.fetchone()
+        category_id = result[0]
+        category_data = get_category(category_id, False)[0]['data']
+
+        cursor.close()
+
+        return create_response(Product(product_id, category_id, result[1], result[2], None, result[3], None, None, None, category_data['is_active']))
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/products/<int:product_id>', methods=[HttpMethod.PATCH.value])
+@login_required
+@is_admin
+def edit_product(product_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        product_name = values['product_name']
+        category_id = values['category_id']
+
+        cursor.execute(
+            f"UPDATE {Table.PRODUCTS.value} "
+            f"SET PRODUCT_NAME = '{product_name}', CATEGORY_ID = {category_id}, DT_UPDATED = SYSDATE "
+            f"WHERE PRODUCT_ID = {product_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
