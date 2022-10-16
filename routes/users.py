@@ -42,7 +42,7 @@ def users():
         items = cursor.fetchall()
 
         for item in items:
-            data.append(User(item[0], item[1], item[2], None, item[3], item[4], None, None, None).__dict__)
+            data.append(User(item[0], item[1], item[2], None, item[3], item[4], None, None, None, None).__dict__)
 
         cursor.execute(f"SELECT COUNT(*) FROM {Table.USERS.value} {where}")
 
@@ -94,8 +94,8 @@ def new_user():
 
         cursor.execute(
             f"INSERT INTO "
-            f"{Table.USERS.value}(USER_ID, USER_NAME, EMAIL, USER_PASSWORD, IS_ADMIN, IS_ACTIVE, DT_CREATED, CREATED_BY_USER_ID) "
-            f"VALUES(INDEX_USER.NEXTVAL, '{user_name}', '{email}', '{encrypted_user_password}', {is_user_admin}, {BooleanAsNumber.TRUE.value}, SYSDATE, {user['user_id']})"
+            f"{Table.USERS.value}(USER_ID, USER_NAME, EMAIL, USER_PASSWORD, IS_ADMIN, IS_ACTIVE, DT_CREATED, CREATED_BY_USER_ID, ALREADY_CHANGED_PASSWORD) "
+            f"VALUES(INDEX_USER.NEXTVAL, '{user_name}', '{email}', '{encrypted_user_password}', {is_user_admin}, {BooleanAsNumber.TRUE.value}, SYSDATE, {user['user_id']}, {BooleanAsNumber.FALSE.value})"
         )
 
         connection.commit()
@@ -119,7 +119,7 @@ def get_user(user_id):
 
         cursor.close()
 
-        return create_response(User(user_id, result[0], result[1], None, result[2], result[3], None, None, None))
+        return create_response(User(user_id, result[0], result[1], None, result[2], result[3], None, None, None, None))
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
 
@@ -162,7 +162,7 @@ def change_password(user_id):
         encrypted_user_password = encrypt(user_password, CryptType.PASSWORD.value)
 
         cursor.execute(
-            f"UPDATE {Table.USERS.value} SET USER_PASSWORD = '{encrypted_user_password}', DT_UPDATED = SYSDATE WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+            f"UPDATE {Table.USERS.value} SET USER_PASSWORD = '{encrypted_user_password}', DT_UPDATED = SYSDATE, ALREADY_CHANGED_PASSWORD = {BooleanAsNumber.TRUE.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
         )
 
         connection.commit()
