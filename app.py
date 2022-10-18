@@ -15,6 +15,7 @@ import routes.auth
 import routes.users
 import routes.categories
 import routes.products
+import routes.inputs
 
 if __name__ == '__main__':
     app.run(debug=eval(environ.get(EnvVar.DEBUG_MODE.value)), port=int(environ.get(EnvVar.PORT.value)))
