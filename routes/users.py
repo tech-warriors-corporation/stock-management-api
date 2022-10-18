@@ -108,12 +108,16 @@ def new_user():
 @app.route(f'/{api_prefix}/users/<int:user_id>', methods=[HttpMethod.GET.value])
 @login_required
 @is_admin
-def get_user(user_id):
+def get_user(user_id, only_active = True):
     try:
         connection = get_connection()
         cursor = connection.cursor()
+        where = f"WHERE USER_ID = {user_id}"
 
-        cursor.execute(f"SELECT USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} WHERE USER_ID = {user_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        if only_active:
+            where = f"{where} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+
+        cursor.execute(f"SELECT USER_NAME, EMAIL, IS_ADMIN, IS_ACTIVE FROM {Table.USERS.value} {where}")
 
         result = cursor.fetchone()
 

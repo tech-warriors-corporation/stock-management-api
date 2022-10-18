@@ -103,12 +103,16 @@ def new_product():
 @app.route(f'/{api_prefix}/products/<int:product_id>', methods=[HttpMethod.GET.value])
 @login_required
 @is_admin
-def get_product(product_id):
+def get_product(product_id, only_active = True):
     try:
         connection = get_connection()
         cursor = connection.cursor()
+        where = f"WHERE PRODUCT_ID = {product_id}"
 
-        cursor.execute(f"SELECT CATEGORY_ID, PRODUCT_NAME, QUANTITY, IS_ACTIVE FROM {Table.PRODUCTS.value} WHERE PRODUCT_ID = {product_id} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}")
+        if only_active:
+            where = f"{where} AND IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
+
+        cursor.execute(f"SELECT CATEGORY_ID, PRODUCT_NAME, QUANTITY, IS_ACTIVE FROM {Table.PRODUCTS.value} {where}")
 
         result = cursor.fetchone()
         category_id = result[0]
