@@ -90,7 +90,6 @@ def new_category():
 
 @app.route(f'/{api_prefix}/categories/<int:category_id>', methods=[HttpMethod.GET.value])
 @login_required
-@is_admin
 def get_category(category_id, only_active = True):
     try:
         connection = get_connection()
@@ -131,7 +130,6 @@ def edit_category(category_id):
 
 @app.route(f'/{api_prefix}/categories/autocomplete', methods=[HttpMethod.GET.value])
 @login_required
-@is_admin
 def get_autocomplete_categories():
     try:
         connection = get_connection()

@@ -107,7 +107,6 @@ def new_user():
 
 @app.route(f'/{api_prefix}/users/<int:user_id>', methods=[HttpMethod.GET.value])
 @login_required
-@is_admin
 def get_user(user_id, only_active = True):
     try:
         connection = get_connection()

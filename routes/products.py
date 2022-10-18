@@ -102,7 +102,6 @@ def new_product():
 
 @app.route(f'/{api_prefix}/products/<int:product_id>', methods=[HttpMethod.GET.value])
 @login_required
-@is_admin
 def get_product(product_id, only_active = True):
     try:
         connection = get_connection()
