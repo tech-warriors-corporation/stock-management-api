@@ -151,7 +151,6 @@ def edit_user(user_id):
 
 @app.route(f'/{api_prefix}/users/<int:user_id>/change_password', methods=[HttpMethod.PATCH.value])
 @login_required
-@is_admin
 def change_password(user_id):
     try:
         connection = get_connection()
