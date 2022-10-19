@@ -30,7 +30,7 @@ def categories():
         if category_name is not None:
             where = f"{where} AND LOWER(CATEGORY_NAME) LIKE LOWER('%{category_name}%')"
 
-        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
+        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED DESC, CATEGORY_ID DESC OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
         items = cursor.fetchall()
 
@@ -142,7 +142,7 @@ def get_autocomplete_categories():
         if is_active is not None and is_active.isnumeric():
             where = f"WHERE IS_ACTIVE = {int(is_active)}"
 
-        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED, CATEGORY_ID")
+        cursor.execute(f"SELECT CATEGORY_ID, CATEGORY_NAME, IS_ACTIVE FROM {Table.CATEGORIES.value} {where} ORDER BY LOWER(CATEGORY_NAME), DT_CREATED DESC, CATEGORY_ID DESC")
 
         items = cursor.fetchall()
 

@@ -28,7 +28,7 @@ def inputs():
 
         cursor.execute(
             f"SELECT INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, CREATED_BY_USER_ID, IS_ACTIVE, DT_ENTERED, DT_CREATED, UNIT_PRICE, INPUT_DESCRIPTION "
-            f"{from_and_where} ORDER BY DT_ENTERED, DT_CREATED, INPUT_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY"
+            f"{from_and_where} ORDER BY DT_ENTERED DESC, DT_CREATED DESC, INPUT_ID DESC OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY"
         )
 
         items = cursor.fetchall()

@@ -35,7 +35,7 @@ def products():
         if category_id is not None and category_id.isnumeric():
             where = f"{where} AND CATEGORY_ID = {int(category_id)}"
 
-        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, CATEGORY_ID, IS_ACTIVE, QUANTITY FROM {Table.PRODUCTS.value} {where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED, PRODUCT_ID OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, CATEGORY_ID, IS_ACTIVE, QUANTITY FROM {Table.PRODUCTS.value} {where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED DESC, PRODUCT_ID DESC OFFSET {page * per_page} ROWS FETCH NEXT {per_page} ROWS ONLY")
 
         items = cursor.fetchall()
 
