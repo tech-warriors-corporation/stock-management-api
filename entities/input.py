@@ -1,3 +1,5 @@
+from utils.number import is_number
+
 class Input:
     def __init__(self, input_id, product, category, product_quantity, has_product_expiration, is_donation, created_by, is_active, dt_entered, dt_created, dt_updated, unit_price, input_description):
         self.input_id = input_id
@@ -13,3 +15,7 @@ class Input:
         self.dt_updated = dt_updated
         self.unit_price = unit_price
         self.input_description = input_description
+        self.total_price = None
+
+        if is_number(self.unit_price) and is_number(self.product_quantity):
+            self.total_price = self.unit_price * self.product_quantity
