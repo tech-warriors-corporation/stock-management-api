@@ -23,8 +23,12 @@ def inputs():
         query_params = request.args.to_dict()
         page = int(query_params.get('page'))
         per_page = int(query_params.get('per_page'))
+        product_id = query_params.get('product_id')
         from_and_where = f"FROM {Table.INPUTS.value} WHERE IS_ACTIVE = {BooleanAsNumber.TRUE.value}"
         data = []
+
+        if product_id is not None and product_id.isnumeric():
+            from_and_where = f"{from_and_where} AND PRODUCT_ID = {int(product_id)}"
 
         cursor.execute(
             f"SELECT INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, CREATED_BY_USER_ID, IS_ACTIVE, DT_ENTERED, DT_CREATED, UNIT_PRICE, INPUT_DESCRIPTION "
