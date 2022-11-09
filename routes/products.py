@@ -146,3 +146,24 @@ def edit_product(product_id):
         return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/products/autocomplete', methods=[HttpMethod.GET.value])
+@login_required
+def get_autocomplete_products():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        data = []
+
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, IS_ACTIVE FROM {Table.PRODUCTS.value} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED DESC, PRODUCT_ID DESC")
+
+        items = cursor.fetchall()
+
+        cursor.close()
+
+        for item in items:
+            data.append(Product(item[0], None, item[1], None, None, item[2], None, None, None, None).__dict__)
+
+        return create_response(data)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
