@@ -167,3 +167,23 @@ def get_autocomplete_products():
         return create_response(data)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+def update_product_quantity(product_id, quantity, is_to_add, cursor):
+    try:
+        product = get_product(product_id, False)[0]['data']
+        next_quantity = product['quantity']
+
+        if is_to_add:
+            next_quantity += quantity
+        else:
+            next_quantity -= quantity
+
+        cursor.execute(
+            f"UPDATE {Table.PRODUCTS.value} "
+            f"SET QUANTITY = {next_quantity}, DT_UPDATED = SYSDATE "
+            f"WHERE PRODUCT_ID = {product_id}"
+        )
+
+        return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
