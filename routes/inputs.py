@@ -25,6 +25,7 @@ def inputs():
         per_page = int(query_params.get('per_page'))
         product_id = query_params.get('product_id')
         has_product_expiration = query_params.get('has_product_expiration')
+        created_by_id = query_params.get('created_by_id')
         from_and_where = f"FROM {Table.INPUTS.value} WHERE INPUT_ID IS NOT NULL"
         data = []
 
@@ -33,6 +34,9 @@ def inputs():
 
         if has_product_expiration is not None and has_product_expiration.isnumeric():
             from_and_where = f"{from_and_where} AND HAS_PRODUCT_EXPIRATION = {int(has_product_expiration)}"
+
+        if created_by_id is not None and created_by_id.isnumeric():
+            from_and_where = f"{from_and_where} AND CREATED_BY_USER_ID = {int(created_by_id)}"
 
         cursor.execute(
             f"SELECT INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, CREATED_BY_USER_ID, DT_ENTERED, DT_CREATED, UNIT_PRICE, INPUT_DESCRIPTION "
