@@ -173,3 +173,24 @@ def change_password(user_id):
         return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/users/select', methods=[HttpMethod.GET.value])
+@login_required
+def get_select_users():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        data = []
+
+        cursor.execute(f"SELECT USER_ID, USER_NAME, IS_ACTIVE FROM {Table.USERS.value} ORDER BY LOWER(USER_NAME), DT_CREATED DESC, USER_ID DESC")
+
+        items = cursor.fetchall()
+
+        cursor.close()
+
+        for item in items:
+            data.append(User(item[0], item[1], None, None, None, item[2], None, None, None, None).__dict__)
+
+        return create_response(data)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
