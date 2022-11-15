@@ -106,10 +106,11 @@ def delete_input(input_id):
         input_data = get_input(input_id)[0]['data']
         product = input_data['product']
         response = update_product_quantity(product['product_id'], input_data['product_quantity'], False, cursor)
+        result = response[0]
         status_code = response[1]
 
         if status_code == StatusCode.BAD_REQUEST.value:
-            return create_response(None, StatusCode.BAD_REQUEST.value)
+            return create_response(result['data'], StatusCode.BAD_REQUEST.value)
 
         cursor.execute(f"DELETE FROM {Table.INPUTS.value} WHERE INPUT_ID = {input_id}")
         connection.commit()

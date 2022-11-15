@@ -186,4 +186,9 @@ def update_product_quantity(product_id, quantity, is_to_add, cursor):
 
         return create_response()
     except:
-        return create_response(None, StatusCode.BAD_REQUEST.value)
+        message = None
+
+        if not is_to_add:
+            message = 'Quantidade do produto não pode ser negativa'
+
+        return create_response(message, StatusCode.BAD_REQUEST.value)
