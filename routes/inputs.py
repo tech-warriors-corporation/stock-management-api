@@ -9,7 +9,7 @@ from enums.table import Table
 from entities.input import Input
 from utils.connection import get_connection
 from flask import request
-from utils.date import format_to_iso
+from utils.date import format_to_iso, date_text_format
 from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
@@ -26,6 +26,7 @@ def inputs():
         product_id = query_params.get('product_id')
         has_product_expiration = query_params.get('has_product_expiration')
         created_by_id = query_params.get('created_by_id')
+        dt_created = query_params.get('dt_created')
         from_and_where = f"FROM {Table.INPUTS.value} WHERE INPUT_ID IS NOT NULL"
         data = []
 
@@ -37,6 +38,9 @@ def inputs():
 
         if created_by_id is not None and created_by_id.isnumeric():
             from_and_where = f"{from_and_where} AND CREATED_BY_USER_ID = {int(created_by_id)}"
+
+        if dt_created is not None:
+            from_and_where = f"{from_and_where} AND TRUNC(DT_CREATED) = TO_DATE('{dt_created}', '{date_text_format}')"
 
         cursor.execute(
             f"SELECT INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, CREATED_BY_USER_ID, DT_ENTERED, DT_CREATED, UNIT_PRICE, INPUT_DESCRIPTION "
