@@ -154,8 +154,14 @@ def get_autocomplete_products():
         connection = get_connection()
         cursor = connection.cursor()
         data = []
+        query_params = request.args.to_dict()
+        is_active = query_params.get('is_active')
+        from_and_where = f"FROM {Table.PRODUCTS.value} WHERE PRODUCT_ID IS NOT NULL"
 
-        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, IS_ACTIVE FROM {Table.PRODUCTS.value} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED DESC, PRODUCT_ID DESC")
+        if is_active is not None and is_active.isnumeric():
+            from_and_where = f"{from_and_where} AND IS_ACTIVE = {int(is_active)}"
+
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_NAME, IS_ACTIVE {from_and_where} ORDER BY LOWER(PRODUCT_NAME), DT_CREATED DESC, PRODUCT_ID DESC")
 
         items = cursor.fetchall()
 
