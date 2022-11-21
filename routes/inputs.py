@@ -9,10 +9,12 @@ from enums.table import Table
 from entities.input import Input
 from utils.connection import get_connection
 from flask import request
-from utils.date import format_to_iso, date_text_format
+from utils.date import format_to_iso, date_text_format, date_save_format
 from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
+from utils.token import decoder
+from enums.header_request import HeaderRequest
 
 @app.route(f'/{api_prefix}/inputs', methods=[HttpMethod.GET.value])
 @login_required
@@ -117,5 +119,42 @@ def delete_input(input_id):
         cursor.close()
 
         return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/inputs', methods=[HttpMethod.POST.value])
+@login_required
+def new_input():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        token = request.headers.get(HeaderRequest.TOKEN.value)
+        user = decoder(token)
+        values = request.get_json()
+        product_id = values['product_id']
+        product_quantity = values['product_quantity']
+        has_product_expiration = values['has_product_expiration']
+        is_donation = values['is_donation']
+        dt_entered = f"TO_DATE('{values['dt_entered'][:len(date_save_format)]}', '{date_save_format}')"
+        unit_price = values['unit_price']
+        input_description = values['input_description']
+        input_description_sql_format = f'\'{input_description}\''
+        response = update_product_quantity(product_id, product_quantity, True, cursor)
+        result = response[0]
+        status_code = response[1]
+
+        if status_code == StatusCode.BAD_REQUEST.value:
+            return create_response(result['data'], StatusCode.BAD_REQUEST.value)
+
+        cursor.execute(
+            f"INSERT INTO "
+            f"{Table.INPUTS.value}(INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, CREATED_BY_USER_ID, DT_ENTERED, DT_CREATED, DT_UPDATED, UNIT_PRICE, INPUT_DESCRIPTION) "
+            f"VALUES(INDEX_INPUT.NEXTVAL, {product_id}, {product_quantity}, {has_product_expiration}, {is_donation}, {user['user_id']}, {dt_entered}, SYSDATE, NULL, {unit_price if unit_price is not None else 'NULL'}, {input_description_sql_format if input_description is not None else 'NULL'})"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
