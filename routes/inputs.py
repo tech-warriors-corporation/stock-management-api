@@ -87,15 +87,15 @@ def get_input(input_id):
         cursor = connection.cursor()
         from_and_where = f"FROM {Table.INPUTS.value} WHERE INPUT_ID = {input_id}"
 
-        cursor.execute(f"SELECT INPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY {from_and_where}")
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, IS_DONATION, DT_ENTERED, DT_CREATED, UNIT_PRICE, INPUT_DESCRIPTION {from_and_where}")
 
         result = cursor.fetchone()
-        product_id = result[1]
+        product_id = result[0]
         product = get_product(product_id, False)[0]['data']
 
         cursor.close()
 
-        return create_response(Input(input_id, product, None, result[2], None, None, None, None, None, None, None, None))
+        return create_response(Input(input_id, product, None, result[1], result[2], result[3], None, format_to_iso(result[4]), format_to_iso(result[5]), None, result[6], result[7]))
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
 
