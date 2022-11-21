@@ -158,3 +158,29 @@ def new_input():
         return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/inputs/<int:input_id>', methods=[HttpMethod.PATCH.value])
+@login_required
+def edit_input(input_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        has_product_expiration = values['has_product_expiration']
+        is_donation = values['is_donation']
+        unit_price = values['unit_price']
+        input_description = values['input_description']
+        input_description_sql_format = f'\'{input_description}\''
+
+        cursor.execute(
+            f"UPDATE {Table.INPUTS.value} "
+            f"SET HAS_PRODUCT_EXPIRATION = {has_product_expiration}, IS_DONATION = {is_donation}, UNIT_PRICE = {unit_price if unit_price is not None else 'NULL'}, INPUT_DESCRIPTION = {input_description_sql_format if input_description is not None else 'NULL'}, DT_UPDATED = SYSDATE "
+            f"WHERE INPUT_ID = {input_id}"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
