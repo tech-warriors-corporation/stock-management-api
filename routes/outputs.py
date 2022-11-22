@@ -9,7 +9,7 @@ from enums.table import Table
 from utils.date import date_text_format, format_to_iso
 from decorators.login_required import login_required
 from entities.output import Output
-from routes.products import get_product
+from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
 
@@ -72,5 +72,49 @@ def outputs():
         cursor.close()
 
         return create_response(data, count=count)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/outputs/<int:output_id>', methods=[HttpMethod.GET.value])
+@login_required
+def get_output(output_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        from_and_where = f"FROM {Table.OUTPUTS.value} WHERE OUTPUT_ID = {output_id}"
+
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_QUANTITY {from_and_where}")
+
+        result = cursor.fetchone()
+        product_id = result[0]
+        product = get_product(product_id, False)[0]['data']
+        product_quantity = result[1]
+
+        cursor.close()
+
+        return create_response(Output(output_id, product, None, product_quantity, None, None, None, None, None, None, None))
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/outputs/<int:output_id>', methods=[HttpMethod.DELETE.value])
+@login_required
+def delete_output(output_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        output_data = get_output(output_id)[0]['data']
+        product = output_data['product']
+        response = update_product_quantity(product['product_id'], output_data['product_quantity'], True, cursor)
+        result = response[0]
+        status_code = response[1]
+
+        if status_code == StatusCode.BAD_REQUEST.value:
+            return create_response(result['data'], StatusCode.BAD_REQUEST.value)
+
+        cursor.execute(f"DELETE FROM {Table.OUTPUTS.value} WHERE OUTPUT_ID = {output_id}")
+        connection.commit()
+        cursor.close()
+
+        return create_response()
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
