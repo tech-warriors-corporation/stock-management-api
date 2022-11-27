@@ -6,12 +6,15 @@ from flask import request
 from utils.request import create_response
 from enums.status_code import StatusCode
 from enums.table import Table
-from utils.date import date_text_format, format_to_iso
+from utils.date import date_text_format, format_to_iso, date_save_format
 from decorators.login_required import login_required
 from entities.output import Output
 from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
+from enums.header_request import HeaderRequest
+from utils.token import decoder
+from utils.string import string_to_varchar
 
 @app.route(f'/{api_prefix}/outputs', methods=[HttpMethod.GET.value])
 @login_required
@@ -116,5 +119,41 @@ def delete_output(output_id):
         cursor.close()
 
         return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/outputs', methods=[HttpMethod.POST.value])
+@login_required
+def new_output():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        token = request.headers.get(HeaderRequest.TOKEN.value)
+        user = decoder(token)
+        values = request.get_json()
+        product_id = values['product_id']
+        product_quantity = values['product_quantity']
+        has_product_expiration = values['has_product_expiration']
+        dt_exited = f"TO_DATE('{values['dt_exited'][:len(date_save_format)]}', '{date_save_format}')"
+        product_went_to = values['product_went_to']
+        output_description = values['output_description']
+        output_description_sql_format = string_to_varchar(output_description)
+        response = update_product_quantity(product_id, product_quantity, False, cursor)
+        result = response[0]
+        status_code = response[1]
+
+        if status_code == StatusCode.BAD_REQUEST.value:
+            return create_response(result['data'], StatusCode.BAD_REQUEST.value)
+
+        cursor.execute(
+            f"INSERT INTO "
+            f"{Table.OUTPUTS.value}(OUTPUT_ID, PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, PRODUCT_WENT_TO, CREATED_BY_USER_ID, DT_EXITED, DT_CREATED, OUTPUT_DESCRIPTION) "
+            f"VALUES(INDEX_OUTPUT.NEXTVAL, {product_id}, {product_quantity}, {has_product_expiration}, '{product_went_to}', {user['user_id']}, {dt_exited}, SYSDATE, {output_description_sql_format if output_description is not None else 'NULL'})"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
