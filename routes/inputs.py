@@ -15,6 +15,7 @@ from routes.categories import get_category
 from routes.users import get_user
 from utils.token import decoder
 from enums.header_request import HeaderRequest
+from utils.string import string_to_varchar
 
 @app.route(f'/{api_prefix}/inputs', methods=[HttpMethod.GET.value])
 @login_required
@@ -138,7 +139,7 @@ def new_input():
         dt_entered = f"TO_DATE('{values['dt_entered'][:len(date_save_format)]}', '{date_save_format}')"
         unit_price = values['unit_price']
         input_description = values['input_description']
-        input_description_sql_format = f'\'{input_description}\''
+        input_description_sql_format = string_to_varchar(input_description)
         response = update_product_quantity(product_id, product_quantity, True, cursor)
         result = response[0]
         status_code = response[1]
@@ -170,7 +171,7 @@ def edit_input(input_id):
         is_donation = values['is_donation']
         unit_price = values['unit_price']
         input_description = values['input_description']
-        input_description_sql_format = f'\'{input_description}\''
+        input_description_sql_format = string_to_varchar(input_description)
 
         cursor.execute(
             f"UPDATE {Table.INPUTS.value} "
