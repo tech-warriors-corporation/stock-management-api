@@ -177,6 +177,10 @@ def get_autocomplete_products():
 def update_product_quantity(product_id, quantity, is_to_add, cursor):
     try:
         product = get_product(product_id, False)[0]['data']
+
+        if product is None:
+            return create_response('O produto é inválido', StatusCode.BAD_REQUEST.value)
+
         next_quantity = product['quantity']
 
         if is_to_add:
