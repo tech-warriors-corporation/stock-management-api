@@ -6,7 +6,7 @@ from flask import request
 from utils.request import create_response
 from enums.status_code import StatusCode
 from enums.table import Table
-from utils.date import date_text_format, format_to_iso, date_save_format
+from utils.date import date_text_format, format_to_iso, date_save_format, format_to_save_date
 from decorators.login_required import login_required
 from entities.output import Output
 from routes.products import get_product, update_product_quantity
@@ -134,7 +134,7 @@ def new_output():
         product_id = values['product_id']
         product_quantity = values['product_quantity']
         has_product_expiration = values['has_product_expiration']
-        dt_exited = f"TO_DATE('{values['dt_exited'][:len(date_save_format)]}', '{date_save_format}')"
+        dt_exited = f"TO_DATE('{format_to_save_date(values['dt_exited'])}', '{date_save_format}')"
         product_went_to = values['product_went_to']
         output_description = values['output_description']
         output_description_sql_format = string_to_varchar(output_description)

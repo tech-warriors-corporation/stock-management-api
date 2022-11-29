@@ -9,7 +9,7 @@ from enums.table import Table
 from entities.input import Input
 from utils.connection import get_connection
 from flask import request
-from utils.date import format_to_iso, date_text_format, date_save_format
+from utils.date import format_to_iso, date_text_format, date_save_format, format_to_save_date
 from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
@@ -136,7 +136,7 @@ def new_input():
         product_quantity = values['product_quantity']
         has_product_expiration = values['has_product_expiration']
         is_donation = values['is_donation']
-        dt_entered = f"TO_DATE('{values['dt_entered'][:len(date_save_format)]}', '{date_save_format}')"
+        dt_entered = f"TO_DATE('{format_to_save_date(values['dt_entered'])}', '{date_save_format}')"
         unit_price = values['unit_price']
         input_description = values['input_description']
         input_description_sql_format = string_to_varchar(input_description)
