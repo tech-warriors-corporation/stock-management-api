@@ -94,8 +94,8 @@ def get_output(output_id):
         product_quantity = result[1]
         has_product_expiration = result[2]
         product_went_to = result[3]
-        dt_exited = result[4]
-        dt_created = result[5]
+        dt_exited = format_to_iso(result[4])
+        dt_created = format_to_iso(result[5])
         output_description = result[6]
 
         cursor.close()
