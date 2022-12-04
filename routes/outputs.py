@@ -86,16 +86,21 @@ def get_output(output_id):
         cursor = connection.cursor()
         from_and_where = f"FROM {Table.OUTPUTS.value} WHERE OUTPUT_ID = {output_id}"
 
-        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_QUANTITY {from_and_where}")
+        cursor.execute(f"SELECT PRODUCT_ID, PRODUCT_QUANTITY, HAS_PRODUCT_EXPIRATION, PRODUCT_WENT_TO, DT_EXITED, DT_CREATED, OUTPUT_DESCRIPTION {from_and_where}")
 
         result = cursor.fetchone()
         product_id = result[0]
         product = get_product(product_id, False)[0]['data']
         product_quantity = result[1]
+        has_product_expiration = result[2]
+        product_went_to = result[3]
+        dt_exited = result[4]
+        dt_created = result[5]
+        output_description = result[6]
 
         cursor.close()
 
-        return create_response(Output(output_id, product, None, product_quantity, None, None, None, None, None, None, None))
+        return create_response(Output(output_id, product, None, product_quantity, has_product_expiration, product_went_to, None, dt_exited, dt_created, None, output_description))
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
 
