@@ -162,3 +162,28 @@ def new_output():
         return create_response(None)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/outputs/<int:output_id>', methods=[HttpMethod.PATCH.value])
+@login_required
+def edit_output(output_id):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        values = request.get_json()
+        has_product_expiration = values['has_product_expiration']
+        product_went_to = values['product_went_to']
+        output_description = values['output_description']
+        output_description_sql_format = string_to_varchar(output_description)
+
+        cursor.execute(
+            f"UPDATE {Table.OUTPUTS.value} "
+            f"SET HAS_PRODUCT_EXPIRATION = {has_product_expiration}, PRODUCT_WENT_TO = '{product_went_to}', OUTPUT_DESCRIPTION = {output_description_sql_format if output_description is not None else 'NULL'}, DT_UPDATED = SYSDATE "
+            f"WHERE OUTPUT_ID = {output_id}"
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
