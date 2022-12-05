@@ -16,3 +16,9 @@ def format_to_iso(date):
 
 def get_int_time():
     return int(time())
+
+def get_year(date):
+    position = 11
+    year_length = 4
+
+    return int(date[position:(position + year_length)])
