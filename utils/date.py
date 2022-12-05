@@ -21,4 +21,4 @@ def get_year(date):
     position = 11
     year_length = 4
 
-    return int(date[position:(position + year_length)])
+    return date[position:(position + year_length)]
