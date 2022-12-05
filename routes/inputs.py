@@ -9,7 +9,7 @@ from enums.table import Table
 from entities.input import Input
 from utils.connection import get_connection
 from flask import request
-from utils.date import format_to_iso, date_text_format, date_save_format, format_to_save_date
+from utils.date import format_to_iso, date_text_format, date_save_format, format_to_save_date, get_year
 from routes.products import get_product, update_product_quantity
 from routes.categories import get_category
 from routes.users import get_user
@@ -183,5 +183,28 @@ def edit_input(input_id):
         cursor.close()
 
         return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/inputs/products_donated', methods=[HttpMethod.GET.value])
+@login_required
+def get_products_donated():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query_params = request.args.to_dict()
+        year = get_year(query_params.get('year'))
+
+        cursor.execute(
+            f"SELECT COUNT(*) "
+            f"FROM {Table.INPUTS.value} "
+            f"WHERE IS_DONATION = {BooleanAsNumber.TRUE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
+        )
+
+        count = cursor.fetchone()[0]
+
+        cursor.close()
+
+        return create_response(None, count=count)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
