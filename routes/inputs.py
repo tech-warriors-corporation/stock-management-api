@@ -208,3 +208,30 @@ def get_products_donated():
         return create_response(None, count=count)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/inputs/invested_money', methods=[HttpMethod.GET.value])
+@login_required
+def get_invested_money():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query_params = request.args.to_dict()
+        year = get_year(query_params.get('year'))
+        value = 0
+
+        cursor.execute(
+            f"SELECT PRODUCT_QUANTITY, UNIT_PRICE "
+            f"FROM {Table.INPUTS.value} "
+            f"WHERE IS_DONATION = {BooleanAsNumber.FALSE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
+        )
+
+        items = cursor.fetchall()
+
+        for item in items:
+            value += item[0] * item[1]
+
+        cursor.close()
+
+        return create_response(value)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
