@@ -194,12 +194,13 @@ def get_products_donated():
         cursor = connection.cursor()
         query_params = request.args.to_dict()
         year = get_year(query_params.get('year'))
+        product_id = query_params.get('product_id')
+        from_and_where = f"FROM {Table.INPUTS.value} WHERE IS_DONATION = {BooleanAsNumber.TRUE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
 
-        cursor.execute(
-            f"SELECT COUNT(*) "
-            f"FROM {Table.INPUTS.value} "
-            f"WHERE IS_DONATION = {BooleanAsNumber.TRUE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
-        )
+        if product_id is not None and product_id.isnumeric():
+            from_and_where = f"{from_and_where} AND PRODUCT_ID = {int(product_id)}"
+
+        cursor.execute(f"SELECT COUNT(*) {from_and_where}")
 
         count = cursor.fetchone()[0]
 
@@ -217,13 +218,14 @@ def get_invested_money():
         cursor = connection.cursor()
         query_params = request.args.to_dict()
         year = get_year(query_params.get('year'))
+        product_id = query_params.get('product_id')
+        from_and_where = f"FROM {Table.INPUTS.value} WHERE IS_DONATION = {BooleanAsNumber.FALSE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
         value = 0
 
-        cursor.execute(
-            f"SELECT PRODUCT_QUANTITY, UNIT_PRICE "
-            f"FROM {Table.INPUTS.value} "
-            f"WHERE IS_DONATION = {BooleanAsNumber.FALSE.value} AND TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
-        )
+        if product_id is not None and product_id.isnumeric():
+            from_and_where = f"{from_and_where} AND PRODUCT_ID = {int(product_id)}"
+
+        cursor.execute(f"SELECT PRODUCT_QUANTITY, UNIT_PRICE {from_and_where}")
 
         items = cursor.fetchall()
 
