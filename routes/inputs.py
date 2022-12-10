@@ -237,3 +237,33 @@ def get_invested_money():
         return create_response(value)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/inputs/quantity', methods=[HttpMethod.GET.value])
+@login_required
+def get_inputs_quantity():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query_params = request.args.to_dict()
+        year = get_year(query_params.get('year'))
+        product_id = query_params.get('product_id')
+        from_and_where = f"FROM {Table.INPUTS.value} WHERE TRUNC(DT_ENTERED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
+        data = []
+
+        if product_id is not None and product_id.isnumeric():
+            from_and_where = f"{from_and_where} AND PRODUCT_ID = {int(product_id)}"
+
+        cursor.execute(f"SELECT DT_ENTERED {from_and_where}")
+
+        items = cursor.fetchall()
+
+        for item in items:
+            dt_entered = format_to_iso(item[0])
+
+            data.append(Input(None, None, None, None, None, None, None, dt_entered, None, None, None, None).__dict__)
+
+        cursor.close()
+
+        return create_response(data)
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
