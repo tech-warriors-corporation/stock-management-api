@@ -6,7 +6,7 @@ from flask import request
 from utils.request import create_response
 from enums.status_code import StatusCode
 from enums.table import Table
-from utils.date import date_text_format, format_to_iso, date_save_format, format_to_save_date
+from utils.date import date_text_format, format_to_iso, date_save_format, format_to_save_date, get_year
 from decorators.login_required import login_required
 from entities.output import Output
 from routes.products import get_product, update_product_quantity
@@ -185,5 +185,35 @@ def edit_output(output_id):
         cursor.close()
 
         return create_response()
+    except:
+        return create_response(None, StatusCode.BAD_REQUEST.value)
+
+@app.route(f'/{api_prefix}/outputs/quantity', methods=[HttpMethod.GET.value])
+@login_required
+def get_outputs_quantity():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query_params = request.args.to_dict()
+        year = get_year(query_params.get('year'))
+        product_id = query_params.get('product_id')
+        from_and_where = f"FROM {Table.OUTPUTS.value} WHERE TRUNC(DT_EXITED) BETWEEN TO_DATE('01-01-{year}', '{date_text_format}') AND TO_DATE('31-12-{year}', '{date_text_format}')"
+        data = []
+
+        if product_id is not None and product_id.isnumeric():
+            from_and_where = f"{from_and_where} AND PRODUCT_ID = {int(product_id)}"
+
+        cursor.execute(f"SELECT DT_EXITED {from_and_where}")
+
+        items = cursor.fetchall()
+
+        for item in items:
+            dt_exited = format_to_iso(item[0])
+
+            data.append(Output(None, None, None, None, None, None, None, dt_exited, None, None, None).__dict__)
+
+        cursor.close()
+
+        return create_response(data)
     except:
         return create_response(None, StatusCode.BAD_REQUEST.value)
